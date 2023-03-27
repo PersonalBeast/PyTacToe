@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QGri
 class TicTacToe(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.board = [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]
+        self.board = [[' ']*3 for _ in range(3)]
         self.current_player = 'X'
         self.initUI()
 
@@ -42,9 +42,9 @@ class TicTacToe(QMainWindow):
             self.buttons[(row, col)].setText(self.current_player)
             winner = self.check_winner()
             if winner:
-                self.show_winner(winner)
+                self.show_game_over_message(f"{winner} wins!")
             elif self.check_tie():
-                self.show_tie()
+                self.show_game_over_message("It's a tie!")
             else:
                 self.current_player = 'O' if self.current_player == 'X' else 'X'
                 self.status_label.setText(f"{self.current_player}'s turn")
@@ -63,21 +63,16 @@ class TicTacToe(QMainWindow):
 
     def check_tie(self):
         for row in self.board:
-            for square in row:
-                if square == ' ':
-                    return False
+            if ' ' in row:
+                return False
         return True
 
-    def show_winner(self, winner):
-        QMessageBox.about(self, "Game Over", f"{winner} wins!")
-        self.reset_board()
-
-    def show_tie(self):
-        QMessageBox.about(self, "Game Over", "It's a tie!")
+    def show_game_over_message(self, message):
+        QMessageBox.about(self, "Game Over", message)
         self.reset_board()
 
     def reset_board(self):
-        self.board = [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]
+        self.board = [[' ']*3 for _ in range(3)]
         for button in self.buttons.values():
             button.setText('')
         self.current_player = 'X'
@@ -86,7 +81,8 @@ class TicTacToe(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    tictactoe =    TicTacToe()
+    tictactoe = TicTacToe()
     sys.exit(app.exec_())
+
 
 
